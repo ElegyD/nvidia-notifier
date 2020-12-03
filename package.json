@@ -1,0 +1,20 @@
+{
+  "name": "nvidia-notifier",
+  "version": "1.0.0",
+  "description": "Get notified when the retailer purchase link to a NVIDIA GeForce RTX Founders Edition gets updated",
+  "main": "index.js",
+  "dependencies": {
+    "dotenv": "^8.2.0",
+    "nodemailer": "^6.4.16"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "ElegyD",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ElegyD/nvidia-notifier.git"
+  }
+}
