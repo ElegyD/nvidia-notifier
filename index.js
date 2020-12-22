@@ -21,8 +21,8 @@ var purchaseLinks = new Set();
 
 // Fetch once to get current purchase links
 fetchProductDetails(products => {
-    for (productDetails of products) {
-        for (retailer of productDetails['retailers']) {
+    for (const productDetails of products) {
+        for (const retailer of productDetails['retailers']) {
             var purchaseLink = retailer['purchaseLink'];
             purchaseLinks.add(purchaseLink);
         }
@@ -35,14 +35,14 @@ function setupFinished() {
     setInterval(() => {
         fetchProductDetails(products => {
             var time = new Date().toLocaleTimeString();
-            for (productDetails of products) {
+            for (const productDetails of products) {
                 var productTitle = productDetails['productTitle'];
                 //var productPrice = productDetails['productPrice'];
                 var retailers = productDetails['retailers'];
                 if (retailers.length == 0) {
                     console.log(`${time}: ${productTitle} - NO retailers`);
                 } else {
-                    for (retailer of retailers) {
+                    for (const retailer of retailers) {
                         var purchaseLink = retailer['purchaseLink'];
                         if (purchaseLinks.has(purchaseLink)) {
                             console.log(`${time}: ${productTitle} - OLD purchaseLink ${purchaseLink}`);
@@ -90,7 +90,7 @@ function fetchProductDetails(callback) {
             var productDetails = searchedProducts['productDetails'];
             var products = [];
             products.push(featuredProduct);
-            for (product of productDetails) {
+            for (const product of productDetails) {
                 products.push(product);
             }
             callback(products);
