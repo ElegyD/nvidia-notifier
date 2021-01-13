@@ -8,7 +8,7 @@
     "nodemailer": "^6.4.17"
   },
   "devDependencies": {
-    "eslint": "^7.16.0"
+    "eslint": "^7.17.0"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

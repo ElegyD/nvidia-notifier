@@ -17,14 +17,18 @@ const selectedGPUs = Object.keys(gpus).filter(key => gpus[key] === 'true').join(
 const url = `https://api.nvidia.partners/edge/product/search?page=1&limit=9&locale=${locale}&category=GPU&gpu=${selectedGPUs}&manufacturer=NVIDIA&manufacturer_filter=NVIDIA~2,ASUS~7,EVGA~10,GAINWARD~0,GIGABYTE~6,MSI~2,PNY~4,ZOTAC~3`;
 const options = {};
 
-var purchaseLinks = new Set();
+var currentAvailability = {};
 
-// Fetch once to get current purchase links
+// Fetch once to get current availability
 fetchProductDetails(products => {
     for (const productDetails of products) {
+        var gpu = productDetails['gpu'];
         for (const retailer of productDetails['retailers']) {
-            var purchaseLink = retailer['purchaseLink'];
-            purchaseLinks.add(purchaseLink);
+            var isAvailable = retailer['isAvailable'];
+            //var partnerId = retailer['partnerId'];
+            //var storeId = retailer['storeId'];
+            var retailerName = retailer['retailerName'];
+            currentAvailability[gpu][retailerName] = isAvailable;
         }
     }
 
@@ -38,19 +42,36 @@ function setupFinished() {
             for (const productDetails of products) {
                 var productTitle = productDetails['productTitle'];
                 //var productPrice = productDetails['productPrice'];
+                var gpu = productDetails['gpu'];
+                var prdStatus = productDetails['prdStatus'];
+                if (prdStatus !== "out_of_stock") {
+                    console.log(`${time}: ${productTitle} - prdStatus not "out_of_stock": ${prdStatus}`);
+                }
                 var retailers = productDetails['retailers'];
                 if (retailers.length == 0) {
-                    console.log(`${time}: ${productTitle} - NO retailers`);
+                    console.log(`${time}: [${productTitle}] - No retailers`);
+                    for (const retailerName in currentAvailability[gpu]) {
+                        if (currentAvailability[gpu][retailerName]) {
+                            console.log(`${time}: [${productTitle}] [${retailerName}] - Gone now`);
+                        }
+                        currentAvailability[gpu][retailerName] = false;
+                    }
                 } else {
                     for (const retailer of retailers) {
+                        var isAvailable = retailer['isAvailable'];
                         var purchaseLink = retailer['purchaseLink'];
-                        if (purchaseLinks.has(purchaseLink)) {
-                            console.log(`${time}: ${productTitle} - OLD purchaseLink ${purchaseLink}`);
-                        } else {
-                            console.log(`${time}: ${productTitle} - NEW purchaseLink ${purchaseLink}`);
-                            purchaseLinks.add(purchaseLink);
+                        //var partnerId = retailer['partnerId'];
+                        //var storeId = retailer['storeId'];
+                        var retailerName = retailer['retailerName'];
+                        var wasAvailable = currentAvailability[gpu][retailerName];
+                        if (isAvailable && !wasAvailable) {
+                            console.log(`${time}: [${productTitle}] [${retailerName}] - Available at ${purchaseLink}`);
                             sendMail(productTitle, purchaseLink);
                         }
+                        if (wasAvailable && !isAvailable) {
+                            console.log(`${time}: [${productTitle}] [${retailerName}] - Gone now`);
+                        }
+                        currentAvailability[gpu][retailerName] = isAvailable;
                     }
                 }
             }

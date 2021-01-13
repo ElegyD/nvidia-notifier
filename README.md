@@ -1,6 +1,6 @@
 # NVIDIA notifier
 
-Get notified when the retailer purchase link to a NVIDIA GeForce RTX Founders Edition gets updated.
+Get notified as soon as an NVIDIA GeForce RTX Founders Edition is available for purchase.
 
 ## Installation
 
