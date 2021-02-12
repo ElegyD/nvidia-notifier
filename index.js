@@ -23,6 +23,7 @@ var currentAvailability = {};
 fetchProductDetails(products => {
     for (const productDetails of products) {
         var gpu = productDetails['gpu'];
+        currentAvailability[gpu] = {};
         for (const retailer of productDetails['retailers']) {
             var isAvailable = retailer['isAvailable'];
             //var partnerId = retailer['partnerId'];
