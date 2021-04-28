@@ -17,19 +17,29 @@ const selectedGPUs = Object.keys(gpus).filter(key => gpus[key] === 'true').join(
 const url = `https://api.nvidia.partners/edge/product/search?page=1&limit=9&locale=${locale}&category=GPU&gpu=${selectedGPUs}&manufacturer=NVIDIA&manufacturer_filter=NVIDIA~2,ASUS~7,EVGA~10,GAINWARD~0,GIGABYTE~6,MSI~2,PNY~4,ZOTAC~3`;
 const options = {};
 
-var currentAvailability = {};
+/**
+ * Available types:
+ * 
+ * 29: "Check Availability"
+ * 76: "Buy Now"
+ * 75: "Buy Now"
+ * 77: "Customized & Buy"
+ * 80: "Out Of Stock"
+ */
+var currentTypes = {};
 
 // Fetch once to get current availability
 fetchProductDetails(products => {
     for (const productDetails of products) {
         var gpu = productDetails['gpu'];
-        currentAvailability[gpu] = {};
+        currentTypes[gpu] = {};
         for (const retailer of productDetails['retailers']) {
-            var isAvailable = retailer['isAvailable'];
+            //var isAvailable = retailer['isAvailable'];
             //var partnerId = retailer['partnerId'];
             //var storeId = retailer['storeId'];
             var retailerName = retailer['retailerName'];
-            currentAvailability[gpu][retailerName] = isAvailable;
+            var type = retailer['type'];
+            currentTypes[gpu][retailerName] = type;
         }
     }
 
@@ -39,7 +49,7 @@ fetchProductDetails(products => {
 function setupFinished() {
     setInterval(() => {
         fetchProductDetails(products => {
-            var time = new Date().toLocaleTimeString();
+            var time = new Date().toISOString();
             for (const productDetails of products) {
                 var productTitle = productDetails['productTitle'];
                 //var productPrice = productDetails['productPrice'];
@@ -51,28 +61,29 @@ function setupFinished() {
                 var retailers = productDetails['retailers'];
                 if (retailers.length == 0) {
                     console.log(`${time}: [${productTitle}] - No retailers`);
-                    for (const retailerName in currentAvailability[gpu]) {
-                        if (currentAvailability[gpu][retailerName]) {
+                    for (const retailerName in currentTypes[gpu]) {
+                        if (currentTypes[gpu][retailerName] !== 80) {
                             console.log(`${time}: [${productTitle}] [${retailerName}] - Gone now`);
                         }
-                        currentAvailability[gpu][retailerName] = false;
+                        delete currentTypes[gpu][retailerName];
                     }
                 } else {
                     for (const retailer of retailers) {
-                        var isAvailable = retailer['isAvailable'];
+                        //var isAvailable = retailer['isAvailable'];
                         var purchaseLink = retailer['purchaseLink'];
                         //var partnerId = retailer['partnerId'];
                         //var storeId = retailer['storeId'];
                         var retailerName = retailer['retailerName'];
-                        var wasAvailable = currentAvailability[gpu][retailerName];
-                        if (isAvailable && !wasAvailable) {
+                        var type = retailer['type'];
+                        var wasAvailable = currentTypes[gpu][retailerName] !== 80;
+                        if (type !== 80 && !wasAvailable) {
                             console.log(`${time}: [${productTitle}] [${retailerName}] - Available at ${purchaseLink}`);
                             sendMail(productTitle, purchaseLink);
                         }
-                        if (wasAvailable && !isAvailable) {
+                        if (wasAvailable && type === 80) {
                             console.log(`${time}: [${productTitle}] [${retailerName}] - Gone now`);
                         }
-                        currentAvailability[gpu][retailerName] = isAvailable;
+                        currentTypes[gpu][retailerName] = type;
                     }
                 }
             }
