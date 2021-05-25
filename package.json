@@ -4,11 +4,11 @@
   "description": "Get notified when the retailer purchase link to a NVIDIA GeForce RTX Founders Edition gets updated",
   "main": "index.js",
   "dependencies": {
-    "dotenv": "^8.2.0",
-    "nodemailer": "^6.5.0"
+    "dotenv": "^10.0.0",
+    "nodemailer": "^6.6.1"
   },
   "devDependencies": {
-    "eslint": "^7.25.0"
+    "eslint": "^7.27.0"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

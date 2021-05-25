@@ -61,13 +61,9 @@ function setupFinished() {
                 var retailers = productDetails['retailers'];
                 if (retailers.length == 0) {
                     console.log(`${time}: [${productTitle}] - No retailers`);
-                    for (const retailerName in currentTypes[gpu]) {
-                        if (currentTypes[gpu][retailerName] !== 80) {
-                            console.log(`${time}: [${productTitle}] [${retailerName}] - Gone now`);
-                        }
-                        delete currentTypes[gpu][retailerName];
-                    }
+                    currentTypes[gpu] = {};
                 } else {
+                    var retailerNames = [];
                     for (const retailer of retailers) {
                         //var isAvailable = retailer['isAvailable'];
                         var purchaseLink = retailer['purchaseLink'];
@@ -75,15 +71,22 @@ function setupFinished() {
                         //var storeId = retailer['storeId'];
                         var retailerName = retailer['retailerName'];
                         var type = retailer['type'];
+                        retailerNames.push(retailerName);
                         var wasAvailable = currentTypes[gpu][retailerName] !== 80;
-                        if (type !== 80 && !wasAvailable) {
+                        if (type !== 80) {
                             console.log(`${time}: [${productTitle}] [${retailerName}] - Available at ${purchaseLink}`);
-                            sendMail(productTitle, purchaseLink);
-                        }
-                        if (wasAvailable && type === 80) {
-                            console.log(`${time}: [${productTitle}] [${retailerName}] - Gone now`);
+                            if (!wasAvailable) {
+                                sendMail(productTitle, purchaseLink);
+                            }
+                        } else {
+                            console.log(`${time}: [${productTitle}] [${retailerName}] - Out of stock`);
                         }
                         currentTypes[gpu][retailerName] = type;
+                    }
+                    for (const retailerName in currentTypes[gpu]) {
+                        if (!retailerNames.includes(retailerName)) {
+                            delete currentTypes[gpu][retailerName];
+                        }
                     }
                 }
             }
