@@ -56,7 +56,7 @@ function setupFinished() {
                 var gpu = productDetails['gpu'];
                 var prdStatus = productDetails['prdStatus'];
                 if (prdStatus !== "out_of_stock") {
-                    console.log(`${time}: ${productTitle} - prdStatus not "out_of_stock": ${prdStatus}`);
+                    console.log(`${time}: [${productTitle}] - prdStatus not "out_of_stock": ${prdStatus}`);
                 }
                 var retailers = productDetails['retailers'];
                 if (retailers.length == 0) {
@@ -72,9 +72,9 @@ function setupFinished() {
                         var retailerName = retailer['retailerName'];
                         var type = retailer['type'];
                         retailerNames.push(retailerName);
-                        var wasAvailable = currentTypes[gpu][retailerName] !== 80;
                         if (type !== 80) {
                             console.log(`${time}: [${productTitle}] [${retailerName}] - Available at ${purchaseLink}`);
+                            var wasAvailable = retailerName in currentTypes[gpu] && currentTypes[gpu][retailerName] !== 80;
                             if (!wasAvailable) {
                                 sendMail(productTitle, purchaseLink);
                             }
