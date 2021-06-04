@@ -8,6 +8,7 @@ const interval = Math.max(1, Number(process.env.INTERVAL) || 60) * 1000
 const locale = process.env.LOCALE || 'de-de';
 const gpus = {
     'RTX 3090': process.env.RTX_3090,
+    'RTX 3080 Ti': process.env.RTX_3080_TI,
     'RTX 3080': process.env.RTX_3080,
     'RTX 3070': process.env.RTX_3070,
     'RTX 3060 Ti': process.env.RTX_3060_TI
