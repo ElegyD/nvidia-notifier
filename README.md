@@ -24,6 +24,7 @@ LOCALE=de-de      # Locale used to fetch NVIDIA API
 RTX_3090=false    # Enable/Disable RTX 3090
 RTX_3080_TI=false # Enable/Disable RTX 3080 Ti
 RTX_3080=false    # Enable/Disable RTX 3080
+RTX_3070_TI=false # Enable/Disable RTX 3070 Ti
 RTX_3070=false    # Enable/Disable RTX 3070
 RTX_3060_TI=false # Enable/Disable RTX 3060 Ti
 ```

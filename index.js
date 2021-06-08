@@ -10,12 +10,17 @@ const gpus = {
     'RTX 3090': process.env.RTX_3090,
     'RTX 3080 Ti': process.env.RTX_3080_TI,
     'RTX 3080': process.env.RTX_3080,
+    'RTX 3070 Ti': process.env.RTX_3070_TI,
     'RTX 3070': process.env.RTX_3070,
     'RTX 3060 Ti': process.env.RTX_3060_TI
 };
-const selectedGPUs = Object.keys(gpus).filter(key => gpus[key] === 'true').join();
+const selectedGPUs = Object.keys(gpus).filter(key => gpus[key] === 'true').map(key => encodeURI(key)).join();
+if (selectedGPUs.length == 0) {
+    console.log('No GPUs selected. Enable at least one GPU in your .env file.');
+    return;
+}
 
-const url = `https://api.nvidia.partners/edge/product/search?page=1&limit=9&locale=${locale}&category=GPU&gpu=${selectedGPUs}&manufacturer=NVIDIA&manufacturer_filter=NVIDIA~2,ASUS~7,EVGA~10,GAINWARD~0,GIGABYTE~6,MSI~2,PNY~4,ZOTAC~3`;
+const url = `https://api.nvidia.partners/edge/product/search?page=1&limit=9&locale=${locale}&category=GPU&gpu=${selectedGPUs}&manufacturer=NVIDIA`;
 const options = {};
 
 /**
@@ -122,6 +127,9 @@ function fetchProductDetails(callback) {
     https.get(url, options, res => {
         res.on('data', data => {
             var json = JSON.parse(data);
+            if (json === null) {
+                return;
+            }
             var searchedProducts = json['searchedProducts'];
             var featuredProduct = searchedProducts['featuredProduct'];
             var productDetails = searchedProducts['productDetails'];
