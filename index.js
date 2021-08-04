@@ -1,6 +1,7 @@
 require('dotenv').config();
 
 const https = require('https');
+const zlib = require('zlib');
 const nodemailer = require('nodemailer');
 const transport = require('./nodemailer.json');
 
@@ -21,7 +22,12 @@ if (selectedGPUs.length == 0) {
 }
 
 const url = `https://api.nvidia.partners/edge/product/search?page=1&limit=9&locale=${locale}&category=GPU&gpu=${selectedGPUs}&manufacturer=NVIDIA`;
-const options = {};
+const options = {
+    headers: {
+        'Accept': 'application/json, text/plain, */*',
+        'Accept-Encoding': 'gzip, deflate, br',
+    }
+};
 
 /**
  * Available types:
@@ -125,7 +131,10 @@ function sendMail(productTitle, purchaseLink) {
 
 function fetchProductDetails(callback) {
     https.get(url, options, res => {
-        res.on('data', data => {
+        var gunzip = zlib.createGunzip();
+        res.pipe(gunzip);
+
+        gunzip.on('data', data => {
             var json = JSON.parse(data);
             if (json === null) {
                 return;
