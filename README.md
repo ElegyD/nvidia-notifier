@@ -2,6 +2,10 @@
 
 Get notified as soon as an NVIDIA GeForce RTX Founders Edition is available for purchase.
 
+## Requirements
+
+- [Node.js](https://nodejs.org/)
+
 ## Installation
 
 ### Clone this repository
@@ -35,7 +39,7 @@ Currently the only channel to get notified is by mail. For this, the `nodemailer
 
 - Create a `nodemailer.json` file in the root directory and enter your transport options.  
 
-Example setup for Gmail:
+Example setup for Gmail (with Google accounts that have 2FA enabled):
 
 1. Create an App password [here](https://myaccount.google.com/apppasswords)
 2. Create the `nodemailer.json` file in the root directory

@@ -134,8 +134,14 @@ function fetchProductDetails(callback) {
         var gunzip = zlib.createGunzip();
         res.pipe(gunzip);
 
+        var body = "";
+
         gunzip.on('data', data => {
-            var json = JSON.parse(data);
+            body += data.toString();
+        });
+
+        gunzip.on('end', () => {
+            var json = JSON.parse(body);
             if (json === null) {
                 return;
             }
