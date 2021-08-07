@@ -4,6 +4,18 @@ const https = require('https');
 const zlib = require('zlib');
 const nodemailer = require('nodemailer');
 const transport = require('./nodemailer.json');
+const { Client, Intents } = require('discord.js');
+const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
+if (process.env.DISCORD_TOKEN) {
+    client.login(process.env.DISCORD_TOKEN)
+        .catch(error => {
+            console.log(error);
+        });
+}
+
+client.on('ready', () => {
+
+});
 
 const interval = Math.max(1, Number(process.env.INTERVAL) || 60) * 1000
 const locale = process.env.LOCALE || 'de-de';
@@ -88,14 +100,14 @@ function setupFinished() {
                             console.log(`${time}: [${productTitle}] [${retailerName}] - Available at ${purchaseLink}`);
                             var wasAvailable = retailerName in currentTypes[gpu] && currentTypes[gpu][retailerName] !== 80;
                             if (!wasAvailable) {
-                                sendMail(productTitle, purchaseLink);
+                                notify(productTitle, purchaseLink);
                             }
                         } else {
                             console.log(`${time}: [${productTitle}] [${retailerName}] - Out of stock`);
                         }
                         currentTypes[gpu][retailerName] = type;
                     }
-                    for (const retailerName in currentTypes[gpu]) {
+                    for (const retailerName of currentTypes[gpu]) {
                         if (!retailerNames.includes(retailerName)) {
                             delete currentTypes[gpu][retailerName];
                         }
@@ -104,6 +116,11 @@ function setupFinished() {
             }
         });
     }, interval);
+}
+
+function notify(productTitle, purchaseLink) {
+    sendMail(productTitle, purchaseLink);
+    sendDiscordMessage(productTitle, purchaseLink);
 }
 
 function sendMail(productTitle, purchaseLink) {
@@ -120,13 +137,34 @@ function sendMail(productTitle, purchaseLink) {
         text: purchaseLink
     };
 
-    transporter.sendMail(mailOptions, function(error, info) {
+    transporter.sendMail(mailOptions, function (error, info) {
         if (error) {
             console.log(error);
         } else {
             console.log('Email sent: ' + info.response);
         }
     });
+}
+
+async function sendDiscordMessage(productTitle, purchaseLink) {
+    // Channel notification
+    if (process.env.DISCORD_CHANNEL_ID) {
+        var message = `${productTitle} - Available at ${purchaseLink}`;
+        if (process.env.DISCORD_ROLE_ID) {
+            message = `<@&${process.env.DISCORD_ROLE_ID}> ` + message;
+        }
+        const channel = await client.channels.fetch(process.env.DISCORD_CHANNEL_ID)
+        channel.send(message);
+    }
+
+    // User notification
+    if (process.env.DISCORD_USER_IDS) {
+        var userIds = process.env.DISCORD_USER_IDS.split(';');
+        for (const userId of userIds) {
+            const user = await client.users.fetch(userId);
+            user.send(`${productTitle} - Available at ${purchaseLink}`);
+        }
+    }
 }
 
 function fetchProductDetails(callback) {
