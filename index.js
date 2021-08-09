@@ -107,7 +107,7 @@ function setupFinished() {
                         }
                         currentTypes[gpu][retailerName] = type;
                     }
-                    for (const retailerName of currentTypes[gpu]) {
+                    for (const retailerName in currentTypes[gpu]) {
                         if (!retailerNames.includes(retailerName)) {
                             delete currentTypes[gpu][retailerName];
                         }
