@@ -23,18 +23,19 @@ Get notified as soon as an NVIDIA GeForce RTX Founders Edition is available for 
 Create a `.env` file in the root directory for configuration.  
 > Default values are shown below
 ```
-INTERVAL=60         # Inverval in seconds to fetch NVIDIA API
-LOCALE=de-de        # Locale used to fetch NVIDIA API
-RTX_3090=false      # Enable/Disable RTX 3090
-RTX_3080_TI=false   # Enable/Disable RTX 3080 Ti
-RTX_3080=false      # Enable/Disable RTX 3080
-RTX_3070_TI=false   # Enable/Disable RTX 3070 Ti
-RTX_3070=false      # Enable/Disable RTX 3070
-RTX_3060_TI=false   # Enable/Disable RTX 3060 Ti
-DISCORD_TOKEN=      # Discord bot token
-DISCORD_CHANNEL_ID= # Discord channel ID
-DISCORD_ROLE_ID=    # Discord role ID
-DISCORD_USER_IDS=   # Discord user IDs seperated by ';'
+INTERVAL=60                     # Inverval in seconds to fetch NVIDIA API
+LOCALE=de-de                    # Locale used to fetch NVIDIA API
+RTX_3090=false                  # Enable/Disable RTX 3090
+RTX_3080_TI=false               # Enable/Disable RTX 3080 Ti
+RTX_3080=false                  # Enable/Disable RTX 3080
+RTX_3070_TI=false               # Enable/Disable RTX 3070 Ti
+RTX_3070=false                  # Enable/Disable RTX 3070
+RTX_3060_TI=false               # Enable/Disable RTX 3060 Ti
+DISCORD_TOKEN=                  # Discord bot token
+DISCORD_CHANNEL_ID=             # Discord channel ID
+DISCORD_ROLE_ID=                # Discord role ID
+DISCORD_USER_IDS=               # Discord user IDs seperated by ';'
+GOOGLE_APPLICATION_CREDENTIALS= # Google service account JSON file for FCM notifications
 ```
 
 ### Discord notifications
@@ -45,6 +46,18 @@ First enter your Discord bot token in the `.env` file
     - Enter the channel ID and a optional role ID in the `.env` file
 - For direct user messages:
     - Enter one or more user ID's seperated by `;` in the `.env` file
+
+### Firebase Cloud Messaging notifications
+
+1. Create a project in [Firebase](https://console.firebase.google.com/)
+2. Generate and download the [service account JSON file](https://console.firebase.google.com/project/_/settings/serviceaccounts/adminsdk) by clicking on 'Generate New Private Key'
+3. Move the file to the project dir and set the `GOOGLE_APPLICATION_CREDENTIALS` variable in the `.env` file like so:  
+    ```
+    GOOGLE_APPLICATION_CREDENTIALS="./nvidia-notifier-firebase-adminsdk.json"
+    ```
+4. Create an app and set up Firebase and FCM
+5. Subscribe the client app to the `nvidia-notifier` topic
+    - The purchase link is included as a key/value pair in the notification data. Key `purchaseLink`.
 
 ### Email notifications
 
