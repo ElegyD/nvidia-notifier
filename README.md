@@ -24,7 +24,8 @@ Create a `.env` file in the root directory for configuration.
 > Default values are shown below
 ```
 INTERVAL=60                     # Inverval in seconds to fetch NVIDIA API
-LOCALE=de-de                    # Locale used to fetch NVIDIA API
+LOCALE=de-de                    # Locale used to fetch NVIDIA API (language & country code lowercase)
+LOCALE_FEINVENTORY=DE           # Locale used to fetch NVIDIA API (country code uppercase)
 RTX_3090=false                  # Enable/Disable RTX 3090
 RTX_3080_TI=false               # Enable/Disable RTX 3080 Ti
 RTX_3080=false                  # Enable/Disable RTX 3080
