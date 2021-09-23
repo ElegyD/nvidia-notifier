@@ -385,19 +385,22 @@ function fetchFEInventory(callback) {
         var gunzip = zlib.createGunzip();
         res.pipe(gunzip);
 
-        var body = "";
+        var buffer = [];
 
         gunzip.on('data', data => {
-            body += data.toString();
+            buffer.push(data);
         });
-
         gunzip.on('end', () => {
+            var body = Buffer.concat(buffer);
             var json = JSON.parse(body);
             if (json === null) {
                 return;
             }
             var listMap = json['listMap'];
             callback(listMap);
+        });
+        gunzip.on('error', e => {
+            console.log(e);
         });
     }).on('error', error => {
         console.log(error);
@@ -409,13 +412,13 @@ function fetchProductDetails(callback) {
         var gunzip = zlib.createGunzip();
         res.pipe(gunzip);
 
-        var body = "";
+        var buffer = [];
 
         gunzip.on('data', data => {
-            body += data.toString();
+            buffer.push(data);
         });
-
         gunzip.on('end', () => {
+            var body = Buffer.concat(buffer);
             var json = JSON.parse(body);
             if (json === null) {
                 return;
@@ -429,6 +432,9 @@ function fetchProductDetails(callback) {
                 products.push(product);
             }
             callback(products);
+        });
+        gunzip.on('error', e => {
+            console.log(e);
         });
     }).on('error', error => {
         console.log(error);

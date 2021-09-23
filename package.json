@@ -6,8 +6,8 @@
   "dependencies": {
     "discord.js": "^12.5.3",
     "dotenv": "^10.0.0",
-    "google-auth-library": "^7.9.1",
-    "nodemailer": "^6.6.3"
+    "google-auth-library": "^7.9.2",
+    "nodemailer": "^6.6.4"
   },
   "devDependencies": {
     "eslint": "^7.32.0"
