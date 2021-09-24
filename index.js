@@ -59,12 +59,12 @@ const options = {
 var currentTypes = {};
 
 /**
- * NVGFT090_DE = NVIDIA GEFORCE RTX 3090
- * NVGFT080T_DE = NVIDIA GEFORCE RTX 3080 Ti
- * NVGFT080_DE = NVIDIA GEFORCE RTX 3080
- * NVGFT070T_DE = NVIDIA GEFORCE RTX 3070 Ti
- * NVGFT070_DE = NVIDIA GEFORCE RTX 3070
- * NVGFT060T_DE = NVIDIA GEFORCE RTX 3060 Ti
+ * NVGFT090 = NVIDIA GEFORCE RTX 3090
+ * NVGFT080T = NVIDIA GEFORCE RTX 3080 Ti
+ * NVGFT080 = NVIDIA GEFORCE RTX 3080
+ * NVGFT070T = NVIDIA GEFORCE RTX 3070 Ti
+ * NVGFT070 = NVIDIA GEFORCE RTX 3070
+ * NVGFT060T = NVIDIA GEFORCE RTX 3060 Ti
  */
 var currentFEInventory = {};
 
@@ -90,30 +90,30 @@ function setupFinished() {
     setInterval(() => {
         fetchFEInventory(listMap => {
             var time = new Date().toISOString();
-            var wasActiveNVGFT090_DE = currentFEInventory['NVGFT090_DE'];
-            var wasActiveNVGFT080T_DE = currentFEInventory['NVGFT080T_DE'];
-            var wasActiveNVGFT080_DE = currentFEInventory['NVGFT080_DE'];
-            var wasActiveNVGFT070T_DE = currentFEInventory['NVGFT070T_DE'];
-            var wasActiveNVGFT070_DE = currentFEInventory['NVGFT070_DE'];
-            var wasActiveNVGFT060T_DE = currentFEInventory['NVGFT060T_DE'];
-            var isActiveNVGFT090_DE = false;
-            var isActiveNVGFT080T_DE = false;
-            var isActiveNVGFT080_DE = false;
-            var isActiveNVGFT070T_DE = false;
-            var isActiveNVGFT070_DE = false;
-            var isActiveNVGFT060T_DE = false;
+            var wasActiveNVGFT090 = currentFEInventory[`NVGFT090_${localeFEInventory}`];
+            var wasActiveNVGFT080T = currentFEInventory[`NVGFT080T_${localeFEInventory}`];
+            var wasActiveNVGFT080 = currentFEInventory[`NVGFT080_${localeFEInventory}`];
+            var wasActiveNVGFT070T = currentFEInventory[`NVGFT070T_${localeFEInventory}`];
+            var wasActiveNVGFT070 = currentFEInventory[`NVGFT070_${localeFEInventory}`];
+            var wasActiveNVGFT060T = currentFEInventory[`NVGFT060T_${localeFEInventory}`];
+            var isActiveNVGFT090 = false;
+            var isActiveNVGFT080T = false;
+            var isActiveNVGFT080 = false;
+            var isActiveNVGFT070T = false;
+            var isActiveNVGFT070 = false;
+            var isActiveNVGFT060T = false;
             for (const product of listMap) {
                 var is_active = product['is_active'] === 'true';
                 var fe_sku = product['fe_sku'];
                 var product_url = product['product_url'];
                 switch (fe_sku) {
-                    case 'NVGFT090_DE': {
+                    case `NVGFT090_${localeFEInventory}`: {
                         let productTitle = 'NVIDIA GEFORCE RTX 3090';
                         if (process.env.RTX_3090 === 'true') {
                             if (is_active) {
-                                isActiveNVGFT090_DE = true;
+                                isActiveNVGFT090 = true;
                                 console.log(`${time}: [${productTitle}] [FEInventory] - Available at ${product_url}`);
-                                if (!wasActiveNVGFT090_DE) {
+                                if (!wasActiveNVGFT090) {
                                     notify(productTitle, product_url);
                                 }
                             } else {
@@ -122,13 +122,13 @@ function setupFinished() {
                         }
                         break;
                     }
-                    case 'NVGFT080T_DE': {
+                    case `NVGFT080T_${localeFEInventory}`: {
                         let productTitle = 'NVIDIA GEFORCE RTX 3080 Ti';
                         if (process.env.RTX_3080_TI === 'true') {
                             if (is_active) {
-                                isActiveNVGFT080T_DE = true;
+                                isActiveNVGFT080T = true;
                                 console.log(`${time}: [${productTitle}] [FEInventory] - Available at ${product_url}`);
-                                if (!wasActiveNVGFT080T_DE) {
+                                if (!wasActiveNVGFT080T) {
                                     notify(productTitle, product_url);
                                 }
                             } else {
@@ -137,13 +137,13 @@ function setupFinished() {
                         }
                         break;
                     }
-                    case 'NVGFT080_DE': {
+                    case `NVGFT080_${localeFEInventory}`: {
                         let productTitle = 'NVIDIA GEFORCE RTX 3080';
                         if (process.env.RTX_3080 === 'true') {
                             if (is_active) {
-                                isActiveNVGFT080_DE = true;
+                                isActiveNVGFT080 = true;
                                 console.log(`${time}: [${productTitle}] [FEInventory] - Available at ${product_url}`);
-                                if (!wasActiveNVGFT080_DE) {
+                                if (!wasActiveNVGFT080) {
                                     notify(productTitle, product_url);
                                 }
                             } else {
@@ -152,13 +152,13 @@ function setupFinished() {
                         }
                         break;
                     }
-                    case 'NVGFT070T_DE': {
+                    case `NVGFT070T_${localeFEInventory}`: {
                         let productTitle = 'NVIDIA GEFORCE RTX 3070 Ti';
                         if (process.env.RTX_3070_TI === 'true') {
                             if (is_active) {
-                                isActiveNVGFT070T_DE = true;
+                                isActiveNVGFT070T = true;
                                 console.log(`${time}: [${productTitle}] [FEInventory] - Available at ${product_url}`);
-                                if (!wasActiveNVGFT070T_DE) {
+                                if (!wasActiveNVGFT070T) {
                                     notify(productTitle, product_url);
                                 }
                             } else {
@@ -167,13 +167,13 @@ function setupFinished() {
                         }
                         break;
                     }
-                    case 'NVGFT070_DE': {
+                    case `NVGFT070_${localeFEInventory}`: {
                         let productTitle = 'NVIDIA GEFORCE RTX 3070';
                         if (process.env.RTX_3070 === 'true') {
                             if (is_active) {
-                                isActiveNVGFT070_DE = true;
+                                isActiveNVGFT070 = true;
                                 console.log(`${time}: [${productTitle}] [FEInventory] - Available at ${product_url}`);
-                                if (!wasActiveNVGFT070_DE) {
+                                if (!wasActiveNVGFT070) {
                                     notify(productTitle, product_url);
                                 }
                             } else {
@@ -182,13 +182,13 @@ function setupFinished() {
                         }
                         break;
                     }
-                    case 'NVGFT060T_DE': {
+                    case `NVGFT060T_${localeFEInventory}`: {
                         let productTitle = 'NVIDIA GEFORCE RTX 3060 Ti';
                         if (process.env.RTX_3060_TI === 'true') {
                             if (is_active) {
-                                isActiveNVGFT060T_DE = true;
+                                isActiveNVGFT060T = true;
                                 console.log(`${time}: [${productTitle}] [FEInventory] - Available at ${product_url}`);
-                                if (!wasActiveNVGFT060T_DE) {
+                                if (!wasActiveNVGFT060T) {
                                     notify(productTitle, product_url);
                                 }
                             } else {
@@ -199,12 +199,12 @@ function setupFinished() {
                     }
                 }
             }
-            currentFEInventory['NVGFT090_DE'] = isActiveNVGFT090_DE;
-            currentFEInventory['NVGFT080T_DE'] = isActiveNVGFT080T_DE;
-            currentFEInventory['NVGFT080_DE'] = isActiveNVGFT080_DE;
-            currentFEInventory['NVGFT070T_DE'] = isActiveNVGFT070T_DE;
-            currentFEInventory['NVGFT070_DE'] = isActiveNVGFT070_DE;
-            currentFEInventory['NVGFT060T_DE'] = isActiveNVGFT060T_DE;
+            currentFEInventory[`NVGFT090_${localeFEInventory}`] = isActiveNVGFT090;
+            currentFEInventory[`NVGFT080T_${localeFEInventory}`] = isActiveNVGFT080T;
+            currentFEInventory[`NVGFT080_${localeFEInventory}`] = isActiveNVGFT080;
+            currentFEInventory[`NVGFT070T_${localeFEInventory}`] = isActiveNVGFT070T;
+            currentFEInventory[`NVGFT070_${localeFEInventory}`] = isActiveNVGFT070;
+            currentFEInventory[`NVGFT060T_${localeFEInventory}`] = isActiveNVGFT060T;
         });
 
         fetchProductDetails(products => {
