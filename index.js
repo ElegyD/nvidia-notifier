@@ -40,10 +40,9 @@ const url = `https://api.nvidia.partners/edge/product/search?page=1&limit=9&loca
 const urlFEInventory = `https://api.store.nvidia.com/partner/v1/feinventory?skus=${localeFEInventory}~NVGFT070~NVGFT080~NVGFT090~NVLKR30S~NSHRMT01~NVGFT060T~187&locale=${localeFEInventory}`
 const options = {
     headers: {
-        'Accept': 'application/json, text/plain, */*',
-        'Accept-Encoding': 'gzip, deflate, br',
-        'Cache-Control': 'no-cache',
-        'Pragma': 'no-cache'
+        'Accept': 'application/json',
+        'Accept-Encoding': 'gzip',
+        'Cache-Control': 'no-cache'
     }
 };
 
@@ -321,6 +320,9 @@ function sendFCMNotification(productTitle, purchaseLink) {
                         "productTitle": productTitle,
                         "purchaseLink": purchaseLink
                     },
+                    "android": {
+                        "priority": "high"
+                    }
                     /*"webpush": {
                         "fcm_options": {
                             "link": purchaseLink
