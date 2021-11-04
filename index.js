@@ -87,6 +87,21 @@ fetchProductDetails(products => {
 
 function setupFinished() {
     setInterval(() => {
+        var date = new Date();
+        if (process.env.DAYS) {
+            var days = process.env.DAYS.split(',').map(x => parseInt(x));
+            if (!days.includes(date.getDay())) {
+                return;
+            }
+        }
+        if (process.env.HOURS) {
+            var hours = process.env.HOURS.split('-').map(x => parseInt(x));
+            var hour = date.getHours();
+            if (hours.length == 2 && (hour < hours[0] || hour >= hours[1])) {
+                return;
+            }
+        }
+
         fetchFEInventory(listMap => {
             var time = new Date().toISOString();
             var wasActiveNVGFT090 = currentFEInventory[`NVGFT090_${localeFEInventory}`];

@@ -32,6 +32,8 @@ RTX_3080=false                  # Enable/Disable RTX 3080
 RTX_3070_TI=false               # Enable/Disable RTX 3070 Ti
 RTX_3070=false                  # Enable/Disable RTX 3070
 RTX_3060_TI=false               # Enable/Disable RTX 3060 Ti
+DAYS=                           # Weekdays comma seperated (0=su, 1=mo, …) (e.g. 1,2,3,4,5 for mo-fr)
+HOURS=                          # Hours dash seperated (0-23) (e.g. 10-19)
 DISCORD_TOKEN=                  # Discord bot token
 DISCORD_CHANNEL_ID=             # Discord channel ID
 DISCORD_ROLE_ID=                # Discord role ID

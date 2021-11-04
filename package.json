@@ -4,13 +4,13 @@
   "description": "Get notified as soon as an NVIDIA GeForce RTX Founders Edition is available for purchase.",
   "main": "index.js",
   "dependencies": {
-    "discord.js": "^12.5.3",
+    "discord.js": "^13.3.1",
     "dotenv": "^10.0.0",
-    "google-auth-library": "^7.10.1",
+    "google-auth-library": "^7.10.2",
     "nodemailer": "^6.7.0"
   },
   "devDependencies": {
-    "eslint": "^8.0.1"
+    "eslint": "^8.1.0"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
