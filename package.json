@@ -5,7 +5,7 @@
   "main": "index.js",
   "dependencies": {
     "discord.js": "^13.3.1",
-    "dotenv": "^10.0.0",
+    "dotenv": "^16.0.0",
     "google-auth-library": "^7.10.2",
     "nodemailer": "^6.7.0"
   },

@@ -23,6 +23,7 @@ const interval = Math.max(1, Number(process.env.INTERVAL) || 60) * 1000
 const locale = process.env.LOCALE || 'de-de';
 const localeFEInventory = process.env.LOCALE_FEINVENTORY || 'DE';
 const gpus = {
+    'RTX 3090 Ti': process.env.RTX_3090_TI,
     'RTX 3090': process.env.RTX_3090,
     'RTX 3080 Ti': process.env.RTX_3080_TI,
     'RTX 3080': process.env.RTX_3080,
@@ -33,11 +34,11 @@ const gpus = {
 const selectedGPUs = Object.keys(gpus).filter(key => gpus[key] === 'true').map(key => encodeURI(key)).join();
 if (selectedGPUs.length == 0) {
     console.log('No GPUs selected. Enable at least one GPU in your .env file.');
-    return;
+    process.exit();
 }
 
 const url = `https://api.nvidia.partners/edge/product/search?page=1&limit=9&locale=${locale}&category=GPU&gpu=${selectedGPUs}&manufacturer=NVIDIA`;
-const urlFEInventory = `https://api.store.nvidia.com/partner/v1/feinventory?skus=${localeFEInventory}~NVGFT070~NVGFT080~NVGFT090~NVLKR30S~NSHRMT01~NVGFT060T~187&locale=${localeFEInventory}`
+const urlFEInventory = `https://api.store.nvidia.com/partner/v1/feinventory?skus=${localeFEInventory}~NVGFT070~NVGFT080~NVGFT090~NVLKR30S~NSHRMT01~NVGFT060T~371&locale=${localeFEInventory}`;
 const options = {
     headers: {
         'Accept': 'application/json',
@@ -58,6 +59,7 @@ const options = {
 var currentTypes = {};
 
 /**
+ * NVGFT090T = NVIDIA GEFORCE RTX 3090 Ti
  * NVGFT090 = NVIDIA GEFORCE RTX 3090
  * NVGFT080T = NVIDIA GEFORCE RTX 3080 Ti
  * NVGFT080 = NVIDIA GEFORCE RTX 3080
@@ -104,12 +106,14 @@ function setupFinished() {
 
         fetchFEInventory(listMap => {
             var time = new Date().toISOString();
+            var wasActiveNVGFT090T = currentFEInventory[`NVGFT090T_${localeFEInventory}`];
             var wasActiveNVGFT090 = currentFEInventory[`NVGFT090_${localeFEInventory}`];
             var wasActiveNVGFT080T = currentFEInventory[`NVGFT080T_${localeFEInventory}`];
             var wasActiveNVGFT080 = currentFEInventory[`NVGFT080_${localeFEInventory}`];
             var wasActiveNVGFT070T = currentFEInventory[`NVGFT070T_${localeFEInventory}`];
             var wasActiveNVGFT070 = currentFEInventory[`NVGFT070_${localeFEInventory}`];
             var wasActiveNVGFT060T = currentFEInventory[`NVGFT060T_${localeFEInventory}`];
+            var isActiveNVGFT090T = false;
             var isActiveNVGFT090 = false;
             var isActiveNVGFT080T = false;
             var isActiveNVGFT080 = false;
@@ -121,6 +125,21 @@ function setupFinished() {
                 var fe_sku = product['fe_sku'];
                 var product_url = product['product_url'];
                 switch (fe_sku) {
+                    case `NVGFT090T_${localeFEInventory}`: {
+                        let productTitle = 'NVIDIA GEFORCE RTX 3090 Ti';
+                        if (process.env.RTX_3090_TI === 'true') {
+                            if (is_active) {
+                                isActiveNVGFT090T = true;
+                                console.log(`${time}: [${productTitle}] [FEInventory] - Available at ${product_url}`);
+                                if (!wasActiveNVGFT090T) {
+                                    notify(productTitle, product_url);
+                                }
+                            } else {
+                                console.log(`${time}: [${productTitle}] [FEInventory] - Out of stock`);
+                            }
+                        }
+                        break;
+                    }
                     case `NVGFT090_${localeFEInventory}`: {
                         let productTitle = 'NVIDIA GEFORCE RTX 3090';
                         if (process.env.RTX_3090 === 'true') {
@@ -213,6 +232,7 @@ function setupFinished() {
                     }
                 }
             }
+            currentFEInventory[`NVGFT090T_${localeFEInventory}`] = isActiveNVGFT090T;
             currentFEInventory[`NVGFT090_${localeFEInventory}`] = isActiveNVGFT090;
             currentFEInventory[`NVGFT080T_${localeFEInventory}`] = isActiveNVGFT080T;
             currentFEInventory[`NVGFT080_${localeFEInventory}`] = isActiveNVGFT080;
