@@ -1,10 +1,10 @@
 require('dotenv').config();
 
-const https = require('https');
-const zlib = require('zlib');
-const nodemailer = require('nodemailer');
+const { request, get } = require('https');
+const { createGunzip } = require('zlib');
+const { createTransport } = require('nodemailer');
 const transport = require('./nodemailer.json');
-const {JWT} = require('google-auth-library');
+const { JWT } = require('google-auth-library');
 const SCOPES = ['https://www.googleapis.com/auth/firebase.messaging'];
 const { Client, Intents } = require('discord.js');
 const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
@@ -298,7 +298,7 @@ function sendMail(productTitle, purchaseLink) {
         return;
     }
 
-    var transporter = nodemailer.createTransport(transport);
+    var transporter = createTransport(transport);
 
     var mailOptions = {
         from: transport.auth.user,
@@ -379,7 +379,7 @@ function sendFCMNotification(productTitle, purchaseLink) {
                 }
             };
         
-            const req = https.request(options, res => {
+            const req = request(options, res => {
                 console.log(`statusCode: ${res.statusCode}`);
         
                 res.on('data', d => {
@@ -418,8 +418,8 @@ function getAccessToken() {
 }
 
 function fetchFEInventory(callback) {
-    https.get(urlFEInventory, options, res => {
-        var gunzip = zlib.createGunzip();
+    get(urlFEInventory, options, res => {
+        var gunzip = createGunzip();
         res.pipe(gunzip);
 
         var buffer = [];
@@ -445,8 +445,8 @@ function fetchFEInventory(callback) {
 }
 
 function fetchProductDetails(callback) {
-    https.get(url, options, res => {
-        var gunzip = zlib.createGunzip();
+    get(url, options, res => {
+        var gunzip = createGunzip();
         res.pipe(gunzip);
 
         var buffer = [];
