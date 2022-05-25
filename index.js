@@ -50,7 +50,8 @@ const options = {
     headers: {
         'Accept': 'application/json',
         'Cache-Control': 'no-cache',
-        'Connection': 'keep-alive'
+        'Connection': 'keep-alive',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.67 Safari/537.36'
     }
 };
 
@@ -435,12 +436,13 @@ function fetchFEInventory(url, callback) {
         });
         res.on('end', () => {
             var body = Buffer.concat(buffer);
-            var json = JSON.parse(body);
-            if (json === null) {
-                return;
+            try {
+                var json = JSON.parse(body);
+                var listMap = json['listMap'];
+                callback(listMap);
+            } catch (e) {
+                console.error(e);
             }
-            var listMap = json['listMap'];
-            callback(listMap);
         });
         res.on('error', e => {
             console.log(e);
@@ -459,19 +461,20 @@ function fetchProductDetails(callback) {
         });
         res.on('end', () => {
             var body = Buffer.concat(buffer);
-            var json = JSON.parse(body);
-            if (json === null) {
-                return;
+            try {
+                var json = JSON.parse(body);
+                var searchedProducts = json['searchedProducts'];
+                var featuredProduct = searchedProducts['featuredProduct'];
+                var productDetails = searchedProducts['productDetails'];
+                var products = [];
+                products.push(featuredProduct);
+                for (const product of productDetails) {
+                    products.push(product);
+                }
+                callback(products);
+            } catch (e) {
+                console.error(e);
             }
-            var searchedProducts = json['searchedProducts'];
-            var featuredProduct = searchedProducts['featuredProduct'];
-            var productDetails = searchedProducts['productDetails'];
-            var products = [];
-            products.push(featuredProduct);
-            for (const product of productDetails) {
-                products.push(product);
-            }
-            callback(products);
         });
         res.on('error', e => {
             console.log(e);
