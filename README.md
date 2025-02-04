@@ -26,13 +26,8 @@ Create a `.env` file in the root directory for configuration.
 INTERVAL=60                     # Inverval in seconds to fetch NVIDIA API
 LOCALE=de-de                    # Locale used to fetch NVIDIA API (language & country code lowercase)
 LOCALE_FEINVENTORY=DE           # Locale used to fetch NVIDIA API (country code uppercase)
-RTX_3090_TI=false               # Enable/Disable RTX 3090 Ti
-RTX_3090=false                  # Enable/Disable RTX 3090
-RTX_3080_TI=false               # Enable/Disable RTX 3080 Ti
-RTX_3080=false                  # Enable/Disable RTX 3080
-RTX_3070_TI=false               # Enable/Disable RTX 3070 Ti
-RTX_3070=false                  # Enable/Disable RTX 3070
-RTX_3060_TI=false               # Enable/Disable RTX 3060 Ti
+RTX_5090=false                  # Enable/Disable RTX 5090
+RTX_5080=false                  # Enable/Disable RTX 5080
 DAYS=                           # Weekdays comma seperated (0=su, 1=mo, …) (e.g. 1,2,3,4,5 for mo-fr)
 HOURS=                          # Hours dash seperated (0-23) (e.g. 10-19)
 DISCORD_TOKEN=                  # Discord bot token

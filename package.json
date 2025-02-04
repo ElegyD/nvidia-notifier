@@ -4,13 +4,15 @@
   "description": "Get notified as soon as an NVIDIA GeForce RTX Founders Edition is available for purchase.",
   "main": "index.js",
   "dependencies": {
-    "discord.js": "^13.7.0",
-    "dotenv": "^16.0.1",
-    "google-auth-library": "^8.0.2",
-    "nodemailer": "^6.7.5"
+    "discord.js": "^14.17.3",
+    "dotenv": "^16.4.7",
+    "google-auth-library": "^9.15.1",
+    "nodemailer": "^6.10.0"
   },
   "devDependencies": {
-    "eslint": "^8.16.0"
+    "@eslint/js": "^9.19.0",
+    "eslint": "^9.19.0",
+    "globals": "^15.14.0"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -20,5 +22,6 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/ElegyD/nvidia-notifier.git"
-  }
+  },
+  "type": "module"
 }
