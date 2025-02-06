@@ -83,82 +83,88 @@ async function fetchProducts(sendNotification) {
 
     if (process.env.RTX_5090) {
         const listMap = await fetchFEInventory(urlsFEInventory[0]);
-        const wasActiveNVGFT590 = currentFEInventory[`NVGFT590_${localeFEInventory}`];
-        let isActiveNVGFT590 = false;
-        for (const product of listMap) {
-            const is_active = product['is_active'] === 'true';
-            const product_url = product['product_url'];
-            const productTitle = 'NVIDIA GEFORCE RTX 5090';
-            if (is_active) {
-                isActiveNVGFT590 = true;
-                console.log(`${time}: [${productTitle}] [FEInventory] - Available at ${product_url}`);
-                if (!wasActiveNVGFT590 && sendNotification) {
-                    notify(productTitle, product_url);
+        if (listMap) {
+            const wasActiveNVGFT590 = currentFEInventory[`NVGFT590_${localeFEInventory}`];
+            let isActiveNVGFT590 = false;
+            for (const product of listMap) {
+                const is_active = product['is_active'] === 'true';
+                const product_url = product['product_url'];
+                const productTitle = 'NVIDIA GEFORCE RTX 5090';
+                if (is_active) {
+                    isActiveNVGFT590 = true;
+                    console.log(`${time}: [${productTitle}] [FEInventory] - Available at ${product_url}`);
+                    if (!wasActiveNVGFT590 && sendNotification) {
+                        notify(productTitle, product_url);
+                    }
+                } else {
+                    console.log(`${time}: [${productTitle}] [FEInventory] - Out of stock`);
                 }
-            } else {
-                console.log(`${time}: [${productTitle}] [FEInventory] - Out of stock`);
             }
+            currentFEInventory[`NVGFT590_${localeFEInventory}`] = isActiveNVGFT590;
         }
-        currentFEInventory[`NVGFT590_${localeFEInventory}`] = isActiveNVGFT590;
     }
 
     if (process.env.RTX_5080) {
         const listMap = await fetchFEInventory(urlsFEInventory[1]);
-        const wasActiveNVGFT580 = currentFEInventory[`NVGFT580_${localeFEInventory}`];
-        let isActiveNVGFT580 = false;
-        for (const product of listMap) {
-            const is_active = product['is_active'] === 'true';
-            const product_url = product['product_url'];
-            const productTitle = 'NVIDIA GEFORCE RTX 5080';
-            if (is_active) {
-                isActiveNVGFT580 = true;
-                console.log(`${time}: [${productTitle}] [FEInventory] - Available at ${product_url}`);
-                if (!wasActiveNVGFT580 && sendNotification) {
-                    notify(productTitle, product_url);
+        if (listMap) {
+            const wasActiveNVGFT580 = currentFEInventory[`NVGFT580_${localeFEInventory}`];
+            let isActiveNVGFT580 = false;
+            for (const product of listMap) {
+                const is_active = product['is_active'] === 'true';
+                const product_url = product['product_url'];
+                const productTitle = 'NVIDIA GEFORCE RTX 5080';
+                if (is_active) {
+                    isActiveNVGFT580 = true;
+                    console.log(`${time}: [${productTitle}] [FEInventory] - Available at ${product_url}`);
+                    if (!wasActiveNVGFT580 && sendNotification) {
+                        notify(productTitle, product_url);
+                    }
+                } else {
+                    console.log(`${time}: [${productTitle}] [FEInventory] - Out of stock`);
                 }
-            } else {
-                console.log(`${time}: [${productTitle}] [FEInventory] - Out of stock`);
             }
+            currentFEInventory[`NVGFT580_${localeFEInventory}`] = isActiveNVGFT580;
         }
-        currentFEInventory[`NVGFT580_${localeFEInventory}`] = isActiveNVGFT580;
     }
 
     const products = await fetchProductDetails();
-    for (const productDetails of products) {
-        const productTitle = productDetails['productTitle'];
-        //const productPrice = productDetails['productPrice'];
-        const gpu = productDetails['gpu'];
-        const prdStatus = productDetails['prdStatus'];
-        if (prdStatus !== "out_of_stock") {
-            console.log(`${time}: [${productTitle}] - prdStatus not "out_of_stock": ${prdStatus}`);
-        }
-        const retailers = productDetails['retailers'];
-        const retailerNames = [];
-        for (const retailer of retailers) {
-            //const isAvailable = retailer['isAvailable'];
-            const purchaseLink = retailer['purchaseLink'];
-            //const partnerId = retailer['partnerId'];
-            //const storeId = retailer['storeId'];
-            const retailerName = retailer['retailerName'];
-            const type = retailer['type'];
-            retailerNames.push(retailerName);
-            if (type !== 80) {
-                console.log(`${time}: [${productTitle}] [${retailerName}] - Available at ${purchaseLink}`);
-                const wasAvailable = retailerName in currentTypes[gpu] && currentTypes[gpu][retailerName] !== 80;
-                if (!wasAvailable && sendNotification) {
-                    notify(productTitle, purchaseLink);
+    if (products) {
+        for (const productDetails of products) {
+            const productTitle = productDetails['productTitle'];
+            //const productPrice = productDetails['productPrice'];
+            const gpu = productDetails['gpu'];
+            const prdStatus = productDetails['prdStatus'];
+            if (prdStatus !== "out_of_stock") {
+                console.log(`${time}: [${productTitle}] - prdStatus not "out_of_stock": ${prdStatus}`);
+            }
+            const retailers = productDetails['retailers'];
+            const retailerNames = [];
+            for (const retailer of retailers) {
+                //const isAvailable = retailer['isAvailable'];
+                const purchaseLink = retailer['purchaseLink'];
+                //const partnerId = retailer['partnerId'];
+                //const storeId = retailer['storeId'];
+                const retailerName = retailer['retailerName'];
+                const type = retailer['type'];
+                retailerNames.push(retailerName);
+                if (type !== 80) {
+                    console.log(`${time}: [${productTitle}] [${retailerName}] - Available at ${purchaseLink}`);
+                    const wasAvailable = retailerName in currentTypes[gpu] && currentTypes[gpu][retailerName] !== 80;
+                    if (!wasAvailable && sendNotification) {
+                        notify(productTitle, purchaseLink);
+                    }
+                } else {
+                    console.log(`${time}: [${productTitle}] [${retailerName}] - Out of stock`);
                 }
-            } else {
-                console.log(`${time}: [${productTitle}] [${retailerName}] - Out of stock`);
+                if (!currentTypes[gpu]) {
+                    currentTypes[gpu] = {};
+                }
+                currentTypes[gpu][retailerName] = type;
             }
-            if (!currentTypes[gpu]) {
-                currentTypes[gpu] = {};
-            }
-            currentTypes[gpu][retailerName] = type;
-        }
-        for (const retailerName in currentTypes[gpu]) {
-            if (!retailerNames.includes(retailerName)) {
-                delete currentTypes[gpu][retailerName];
+            for (const retailerName in currentTypes[gpu]) {
+                if (!retailerNames.includes(retailerName)) {
+                    delete currentTypes[gpu][retailerName];
+                }
             }
         }
     }
@@ -276,23 +282,33 @@ async function getAccessToken() {
 }
 
 async function fetchFEInventory(url) {
-    const response = await fetch(url, options);
-    const json = await response.json();
-    return json['listMap'];
+    try {
+        const response = await fetch(url, options);
+        const json = await response.json();
+        return json['listMap'];
+    } catch (error) {
+        console.log(error);
+        return null;
+    }
 }
 
 async function fetchProductDetails() {
-    const response = await fetch(url, options);
-    const json = await response.json();
-    const searchedProducts = json['searchedProducts'];
-    const featuredProduct = searchedProducts['featuredProduct'];
-    const productDetails = searchedProducts['productDetails'];
-    const products = [];
-    if (featuredProduct) {
-        products.push(featuredProduct);
+    try {
+        const response = await fetch(url, options);
+        const json = await response.json();
+        const searchedProducts = json['searchedProducts'];
+        const featuredProduct = searchedProducts['featuredProduct'];
+        const productDetails = searchedProducts['productDetails'];
+        const products = [];
+        if (featuredProduct) {
+            products.push(featuredProduct);
+        }
+        for (const product of productDetails) {
+            products.push(product);
+        }
+        return products;
+    } catch (error) {
+        console.log(error);
+        return null;
     }
-    for (const product of productDetails) {
-        products.push(product);
-    }
-    return products;
 }
