@@ -28,6 +28,7 @@ LOCALE=de-de                    # Locale used to fetch NVIDIA API (language & co
 LOCALE_FEINVENTORY=DE           # Locale used to fetch NVIDIA API (country code uppercase)
 RTX_5090=false                  # Enable/Disable RTX 5090
 RTX_5080=false                  # Enable/Disable RTX 5080
+RTX_5070=false                  # Enable/Disable RTX 5070
 DAYS=                           # Weekdays comma seperated (0=su, 1=mo, …) (e.g. 1,2,3,4,5 for mo-fr)
 HOURS=                          # Hours dash seperated (0-23) (e.g. 10-19)
 DISCORD_TOKEN=                  # Discord bot token

@@ -14,7 +14,8 @@ const locale = process.env.LOCALE || 'de-de';
 const localeFEInventory = process.env.LOCALE_FEINVENTORY || 'DE';
 const gpus = {
     'RTX 5090': process.env.RTX_5090,
-    'RTX 5080': process.env.RTX_5080
+    'RTX 5080': process.env.RTX_5080,
+    'RTX 5070': process.env.RTX_5070
 };
 const selectedGPUs = Object.keys(gpus).filter(key => gpus[key] === 'true').map(key => encodeURI(key)).join();
 if (selectedGPUs.length === 0) {
@@ -25,7 +26,8 @@ if (selectedGPUs.length === 0) {
 const url = `https://api.nvidia.partners/edge/product/search?page=1&limit=9&locale=${locale}&category=GPU&gpu=${selectedGPUs}&manufacturer=NVIDIA`;
 const urlsFEInventory = [
     `https://api.store.nvidia.com/partner/v1/feinventory?skus=NVGFT590&locale=${localeFEInventory}`,
-    `https://api.store.nvidia.com/partner/v1/feinventory?skus=NVGFT580&locale=${localeFEInventory}`
+    `https://api.store.nvidia.com/partner/v1/feinventory?skus=NVGFT580&locale=${localeFEInventory}`,
+    `https://api.store.nvidia.com/partner/v1/feinventory?skus=NVGFT570&locale=${localeFEInventory}`
 ];
 const options = {
     headers: {
@@ -54,6 +56,7 @@ let currentTypes = {};
 /**
  * NVGFT590 = NVIDIA GEFORCE RTX 5090
  * NVGFT580 = NVIDIA GEFORCE RTX 5080
+ * NVGFT570 = NVIDIA GEFORCE RTX 5070
  */
 let currentFEInventory = {};
 
@@ -124,6 +127,29 @@ async function fetchProducts(sendNotification) {
                 }
             }
             currentFEInventory[`NVGFT580_${localeFEInventory}`] = isActiveNVGFT580;
+        }
+    }
+
+    if (process.env.RTX_5070) {
+        const listMap = await fetchFEInventory(urlsFEInventory[1]);
+        if (listMap) {
+            const wasActiveNVGFT570 = currentFEInventory[`NVGFT570_${localeFEInventory}`];
+            let isActiveNVGFT570 = false;
+            for (const product of listMap) {
+                const is_active = product['is_active'] === 'true';
+                const product_url = product['product_url'];
+                const productTitle = 'NVIDIA GEFORCE RTX 5070';
+                if (is_active) {
+                    isActiveNVGFT570 = true;
+                    console.log(`${time}: [${productTitle}] [FEInventory] - Available at ${product_url}`);
+                    if (!wasActiveNVGFT570 && sendNotification) {
+                        notify(productTitle, product_url);
+                    }
+                } else {
+                    console.log(`${time}: [${productTitle}] [FEInventory] - Out of stock`);
+                }
+            }
+            currentFEInventory[`NVGFT570_${localeFEInventory}`] = isActiveNVGFT570;
         }
     }
 
